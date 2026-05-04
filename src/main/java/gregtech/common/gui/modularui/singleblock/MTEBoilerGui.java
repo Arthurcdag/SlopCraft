@@ -5,6 +5,7 @@ import com.cleanroommc.modularui.factory.PosGuiData;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.screen.UISettings;
 import com.cleanroommc.modularui.utils.Alignment;
+import com.cleanroommc.modularui.value.sync.BooleanSyncValue;
 import com.cleanroommc.modularui.value.sync.DoubleSyncValue;
 import com.cleanroommc.modularui.value.sync.FloatSyncValue;
 import com.cleanroommc.modularui.value.sync.FluidSlotSyncHandler;
@@ -16,6 +17,7 @@ import com.cleanroommc.modularui.widgets.slot.FluidSlot;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
 import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 
+import gregtech.api.gui.widgets.CommonWidgets;
 import gregtech.api.modularui2.GTGuis;
 import gregtech.api.modularui2.GTWidgetThemes;
 import gregtech.api.util.GTUtility;
@@ -36,6 +38,9 @@ public class MTEBoilerGui {
         syncManager.registerSlotGroup("item_inv", 0);
         FloatSyncValue heat = new FloatSyncValue(() -> (float) base.mTemperature / base.maxProgresstime());
         syncManager.syncValue("heat", heat);
+        syncManager.syncValue(
+            "mufflerSyncer",
+            new BooleanSyncValue(base.getBaseMetaTileEntity()::isMuffled, base.getBaseMetaTileEntity()::setMuffler));
         IWidget waterSlots = Flow.column()
             .coverChildren()
             .child(
@@ -93,6 +98,12 @@ public class MTEBoilerGui {
 
         return GTGuis.mteTemplatePanelBuilder(base, data, syncManager, uiSettings)
             .build()
+            .child(
+                CommonWidgets.createMuffleButton("mufflerSyncer")
+                    .disableThemeBackground(true)
+                    .disableHoverThemeBackground(true)
+                    .top(4)
+                    .right(4))
             .child(
                 Flow.row()
                     .alignX(0.5f)
