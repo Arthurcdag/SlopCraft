@@ -10,8 +10,8 @@ pluginManagement {
                 includeGroupByRegex("com\\.gtnewhorizons\\..+")
             }
         }
-        gradlePluginPortal()
         mavenCentral()
+        gradlePluginPortal()
         mavenLocal()
     }
 }
