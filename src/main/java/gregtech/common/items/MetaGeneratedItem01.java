@@ -463,6 +463,7 @@ import static gregtech.common.items.IDMetaItem01.ZPM4;
 import static gregtech.common.items.IDMetaItem01.ZPM5;
 import static gregtech.common.items.IDMetaItem01.ZPM6;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -3886,6 +3887,40 @@ public class MetaGeneratedItem01 extends MetaGeneratedItemX32 implements IItemFi
 
     public static void registerCauldronCleaningFor(Materials in, Materials out) {
         cauldronRemap.put(in, out);
+        refreshCauldronFakeRecipesFor(in);
+    }
+
+    private static void refreshCauldronFakeRecipesFor(Materials material) {
+        refreshCauldronFakeRecipeFor(OrePrefixes.dustImpure, material);
+        refreshCauldronFakeRecipeFor(OrePrefixes.dustPure, material);
+    }
+
+    private static void refreshCauldronFakeRecipeFor(OrePrefixes prefix, Materials material) {
+        ItemStack input = GTOreDictUnificator.get(prefix, material, 1);
+        ItemStack output = getCauldronWashingResult(prefix, material, 1);
+        if (input == null || output == null) return;
+
+        List<GTRecipe> recipesToRemove = new ArrayList<>();
+        for (GTRecipe recipe : RecipeMaps.cauldronRecipe.getBackend()
+            .getAllRecipes()) {
+            if (recipe.mInputs.length > 0 && GTUtility.areStacksEqual(recipe.mInputs[0], input, true)) {
+                recipesToRemove.add(recipe);
+            }
+        }
+
+        if (recipesToRemove.isEmpty()) return;
+
+        RecipeMaps.cauldronRecipe.getBackend()
+            .removeRecipes(recipesToRemove);
+
+        GTValues.RA.stdBuilder()
+            .itemInputs(input)
+            .fluidInputs(Materials.Water.getFluid(333))
+            .itemOutputs(output)
+            .duration(0)
+            .eut(0)
+            .fake()
+            .addTo(RecipeMaps.cauldronRecipe);
     }
 
     @Override
