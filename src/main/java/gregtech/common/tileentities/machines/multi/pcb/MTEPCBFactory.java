@@ -863,7 +863,7 @@ public class MTEPCBFactory extends MTEExtendedPowerMultiBlockBase<MTEPCBFactory>
                 EnumChatFormatting.GOLD + "12" + EnumChatFormatting.GRAY + " Extreme Engine Intake Casing")
             .addStructureInfo(EnumChatFormatting.GOLD + "20" + EnumChatFormatting.GRAY + " Tungstensteel Pipe Casing")
             .addStructureInfo(
-                EnumChatFormatting.GOLD + "21"
+                EnumChatFormatting.GOLD + "19"
                     + EnumChatFormatting.GRAY
                     + " Reinforced Photolithography Framework Casing")
             .addStructureInfo(
@@ -874,7 +874,7 @@ public class MTEPCBFactory extends MTEExtendedPowerMultiBlockBase<MTEPCBFactory>
                     + "):")
             .addStructureInfo(EnumChatFormatting.GOLD + "40" + EnumChatFormatting.GRAY + " Americium Frame Box")
             .addStructureInfo(
-                EnumChatFormatting.GOLD + "41"
+                EnumChatFormatting.GOLD + "39"
                     + EnumChatFormatting.GRAY
                     + " Reinforced Photolithography Framework Casing")
             .addStructureInfo(EnumChatFormatting.GOLD + "8" + EnumChatFormatting.GRAY + " Superconducting Coil Block")
