@@ -3,22 +3,22 @@
   "modList": [
     {
       "modid": "gregtech",
-      "name": "GregTech",
-      "description": "This Mod adds the awesome Technology of GregTech-Intergalactical to your World!",
+      "name": "SlopCraft",
+      "description": "A GregTech-compatible technology core focused on stability, performance, and expanded progression.",
       "mcversion": "${minecraftVersion}",
       "version": "${modVersion}",
       "logoFile": "/assets/gregtech_addon/textures/LogoGTI_Long.png",
       "url": "http://forum.industrial-craft.net/index.php?page=Thread&threadID=11488",
       "updateUrl": "",
-      "authors": ["Gregorius Techneticies", "Blood Asp"],
-      "credits": "Notch and Mojang for Minecraft, Alblaka and his Team for IndustrialCraft, Mr. Brain for many of the Crop Textures, OvermindDL for helping me with Code, TheSirusKing and matix for a few Textures",
+      "authors": ["SlopCraft contributors", "Gregorius Techneticies", "Blood Asp"],
+      "credits": "Based on GT5-Unofficial. Original credits: Notch and Mojang for Minecraft, Alblaka and his Team for IndustrialCraft, Mr. Brain for many of the Crop Textures, OvermindDL for helping me with Code, TheSirusKing and matix for a few Textures",
       "parent": "",
       "screenshots": [],
       "dependencies": ["Industrialcraft", "structurelib"]
     },
     {
       "modid": "gregtech_nh",
-      "name": "GregTech GTNH",
+      "name": "SlopCraft GTNH Compatibility",
       "description": "",
       "mcversion": "${minecraftVersion}",
       "version": "${modVersion}"

@@ -134,7 +134,7 @@ import ic2.api.recipe.RecipeOutput;
 
 @Mod(
     modid = "gregtech",
-    name = "GregTech",
+    name = "SlopCraft",
     version = "MC1710",
     guiFactory = "gregtech.client.GTGuiFactory",
     dependencies = "required-after:IC2;" + "required-after:structurelib;"
