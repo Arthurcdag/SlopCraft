@@ -3,6 +3,7 @@ package gregtech.common.gui.modularui.hatch;
 import com.cleanroommc.modularui.screen.ModularPanel;
 import com.cleanroommc.modularui.utils.Alignment;
 import com.cleanroommc.modularui.value.sync.PanelSyncManager;
+import com.cleanroommc.modularui.widget.Widget;
 import com.cleanroommc.modularui.widgets.SlotGroupWidget;
 import com.cleanroommc.modularui.widgets.layout.Flow;
 import com.cleanroommc.modularui.widgets.slot.ItemSlot;
@@ -11,6 +12,7 @@ import com.cleanroommc.modularui.widgets.slot.ModularSlot;
 import gregtech.api.enums.ItemList;
 import gregtech.api.modularui2.GTGuiTextures;
 import gregtech.common.gui.modularui.hatch.base.MTEHatchBaseGui;
+import gregtech.common.items.ItemIntegratedCircuit;
 import gtPlusPlus.xmod.gregtech.api.metatileentity.implementations.MTEHatchElementalDataOrbHolder;
 
 public class MTEHatchElementalDataOrbHolderGui extends MTEHatchBaseGui<MTEHatchElementalDataOrbHolder> {
@@ -42,5 +44,14 @@ public class MTEHatchElementalDataOrbHolderGui extends MTEHatchBaseGui<MTEHatchE
     @Override
     protected boolean doesAddCircuitSlot() {
         return true;
+    }
+
+    @Override
+    protected Widget<? extends Widget<?>> createCircuitSlot(PanelSyncManager syncManager) {
+        return new ItemSlot()
+            .background(GTGuiTextures.SLOT_ITEM_STANDARD, GTGuiTextures.OVERLAY_SLOT_INT_CIRCUIT)
+            .slot(
+                new ModularSlot(hatch.inventoryHandler, hatch.getCircuitSlot()).slotGroup("item_inv")
+                    .filter(stack -> stack.getItem() instanceof ItemIntegratedCircuit));
     }
 }

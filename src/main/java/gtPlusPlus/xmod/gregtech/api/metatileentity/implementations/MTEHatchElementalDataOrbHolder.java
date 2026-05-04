@@ -134,7 +134,7 @@ public class MTEHatchElementalDataOrbHolder extends MTEHatch implements IConfigu
 
     @Override
     public boolean allowSelectCircuit() {
-        return true;
+        return false;
     }
 
     @Override
