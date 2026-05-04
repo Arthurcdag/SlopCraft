@@ -6,12 +6,12 @@ import static gregtech.api.metatileentity.BaseTileEntity.TOOLTIP_DELAY;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 
 import com.cleanroommc.modularui.screen.RichTooltip;
@@ -222,11 +222,15 @@ public interface IControllerWithOptionalFeatures extends IVoidable, IRecipeLocka
         Widget button = new ButtonWidget().setOnClick((clickData, widget) -> {
             onMachineModeSwitchClick();
             setMachineMode(nextMachineMode());
+            widget.notifyTooltipChange();
         })
             .setPlayClickSound(true)
             .setBackground(() -> new IDrawable[] { GTUITextures.BUTTON_STANDARD, getMachineModeIcon(getMachineMode()) })
             .attachSyncer(new FakeSyncWidget.IntegerSyncer(this::getMachineMode, this::setMachineMode), builder)
-            .addTooltip(StatCollector.translateToLocal("GT5U.gui.button.mode_switch"))
+            .dynamicTooltip(
+                () -> Arrays.asList(
+                    StatCollector.translateToLocal("GT5U.gui.button.mode_switch"),
+                    EnumChatFormatting.GRAY + EnumChatFormatting.getTextWithoutFormattingCodes(getMachineModeName())))
             .setTooltipShowUpDelay(TOOLTIP_DELAY)
             .setPos(getMachineModeSwitchButtonPos())
             .setSize(16, 16);
@@ -469,22 +473,50 @@ public interface IControllerWithOptionalFeatures extends IVoidable, IRecipeLocka
         Supplier<Boolean> isFeatureEnabled, String tooltipFeatureEnabled, String tooltipFeatureDisabled) {
 
         if (supportsFeature.get()) {
-            widget.dynamicTooltip(() -> {
-                if (isFeatureEnabled.get()) {
-                    return Collections.singletonList(tooltipFeatureEnabled);
-                } else {
-                    return Collections.singletonList(tooltipFeatureDisabled);
-                }
-            });
+            widget.dynamicTooltip(() -> getFeatureTooltipLines(
+                getFeatureTooltip(isFeatureEnabled, tooltipFeatureEnabled, tooltipFeatureDisabled)));
         } else {
             if (isFeatureEnabled.get()) {
-                widget.addTooltip(tooltipFeatureEnabled);
+                for (String tooltipLine : getFeatureTooltipLines(tooltipFeatureEnabled)) {
+                    widget.addTooltip(tooltipLine);
+                }
             } else {
-                widget.addTooltip(tooltipFeatureDisabled);
+                for (String tooltipLine : getFeatureTooltipLines(tooltipFeatureDisabled)) {
+                    widget.addTooltip(tooltipLine);
+                }
             }
 
             widget.addTooltip(StatCollector.translateToLocal(BUTTON_FORBIDDEN_TOOLTIP));
         }
+    }
+
+    static String getFeatureTooltip(Supplier<Boolean> isFeatureEnabled, String tooltipFeatureEnabled,
+        String tooltipFeatureDisabled) {
+        return isFeatureEnabled.get() ? tooltipFeatureEnabled : tooltipFeatureDisabled;
+    }
+
+    static List<String> getFeatureTooltipLines(String tooltipText) {
+        return Arrays.asList(getFeatureTooltipTitle(tooltipText), getFeatureTooltipStateLine(tooltipText));
+    }
+
+    static String getFeatureTooltipStateLine(String tooltipText) {
+        return EnumChatFormatting.GRAY + getFeatureTooltipState(tooltipText);
+    }
+
+    static String getFeatureTooltipTitle(String tooltipText) {
+        String plainText = EnumChatFormatting.getTextWithoutFormattingCodes(tooltipText);
+        int separator = plainText.indexOf(':');
+        if (separator < 0) return plainText;
+        return plainText.substring(0, separator)
+            .trim();
+    }
+
+    static String getFeatureTooltipState(String tooltipText) {
+        String plainText = EnumChatFormatting.getTextWithoutFormattingCodes(tooltipText);
+        int separator = plainText.indexOf(':');
+        if (separator < 0) return "";
+        return plainText.substring(separator + 1)
+            .trim();
     }
 
     Pos2d getStructureUpdateButtonPos();

@@ -847,22 +847,51 @@ public class MTEMultiBlockBaseGui<T extends MTEMultiBlockBase> {
         Supplier<Boolean> isFeatureEnabled, String tooltipFeatureEnabled, String tooltipFeatureDisabled) {
 
         if (supportsFeature.get()) {
-            tooltip.addLine(IKey.dynamic(() -> {
-                if (isFeatureEnabled.get()) {
-                    return tooltipFeatureEnabled;
-                } else {
-                    return tooltipFeatureDisabled;
-                }
-            }));
+            tooltip.addLine(IKey.dynamic(() -> getFeatureTooltipTitle(getFeatureTooltip(isFeatureEnabled,
+                tooltipFeatureEnabled,
+                tooltipFeatureDisabled))));
+            tooltip.addLine(IKey.dynamic(() -> getFeatureTooltipStateLine(getFeatureTooltip(isFeatureEnabled,
+                tooltipFeatureEnabled,
+                tooltipFeatureDisabled))));
         } else {
             if (isFeatureEnabled.get()) {
-                tooltip.addLine(tooltipFeatureEnabled);
+                addFeatureTooltipLines(tooltip, tooltipFeatureEnabled);
             } else {
-                tooltip.addLine(tooltipFeatureDisabled);
+                addFeatureTooltipLines(tooltip, tooltipFeatureDisabled);
             }
 
             tooltip.addLine(IKey.lang(BUTTON_FORBIDDEN_TOOLTIP));
         }
+    }
+
+    private String getFeatureTooltip(Supplier<Boolean> isFeatureEnabled, String tooltipFeatureEnabled,
+        String tooltipFeatureDisabled) {
+        return isFeatureEnabled.get() ? tooltipFeatureEnabled : tooltipFeatureDisabled;
+    }
+
+    private void addFeatureTooltipLines(RichTooltip tooltip, String tooltipText) {
+        tooltip.addLine(getFeatureTooltipTitle(tooltipText));
+        tooltip.addLine(getFeatureTooltipStateLine(tooltipText));
+    }
+
+    private String getFeatureTooltipStateLine(String tooltipText) {
+        return EnumChatFormatting.GRAY + getFeatureTooltipState(tooltipText);
+    }
+
+    private String getFeatureTooltipTitle(String tooltipText) {
+        String plainText = EnumChatFormatting.getTextWithoutFormattingCodes(tooltipText);
+        int separator = plainText.indexOf(':');
+        if (separator < 0) return plainText;
+        return plainText.substring(0, separator)
+            .trim();
+    }
+
+    private String getFeatureTooltipState(String tooltipText) {
+        String plainText = EnumChatFormatting.getTextWithoutFormattingCodes(tooltipText);
+        int separator = plainText.indexOf(':');
+        if (separator < 0) return "";
+        return plainText.substring(separator + 1)
+            .trim();
     }
 
     protected IWidget createModeSwitchButton(PanelSyncManager syncManager) {
@@ -881,7 +910,9 @@ public class MTEMultiBlockBaseGui<T extends MTEMultiBlockBase> {
 
     protected void createModeSwitchTooltip(RichTooltip t) {
         t.addLine(IKey.dynamic(() -> StatCollector.translateToLocal("GT5U.gui.button.mode_switch")))
-            .addLine(IKey.dynamic(multiblock::getMachineModeName));
+            .addLine(
+                IKey.dynamic(() -> EnumChatFormatting.GRAY
+                    + EnumChatFormatting.getTextWithoutFormattingCodes(multiblock.getMachineModeName())));
     }
 
     protected IWidget createBatchModeButton(PanelSyncManager syncManager) {
