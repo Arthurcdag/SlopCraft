@@ -582,26 +582,11 @@ public abstract class MTEDigitalChestBase extends MTETieredMachineBlock
             public int insert(ImmutableItemStack stack, boolean forced) {
                 int remaining = stack.getStackSize();
 
-                if (getCurrentSlot() == 1) {
-                    int max = getStackSizeLimit(1, stack.toStackFast());
-
-                    ItemStack stored = mInventory[1];
-
-                    int storedAmount = stored == null ? 0 : stored.stackSize;
-
-                    int toInsert = Math.min(stack.getStackSize(), max - storedAmount);
-
-                    if (!simulated) {
-                        if (stored == null) mInventory[1] = stack.toStackFast(0);
-
-                        mInventory[1].stackSize += toInsert;
-                    }
-                    remaining -= toInsert;
-                }
-
-                if (!ItemUtil.isStackEmpty(getItemStack()) && !stack.matches(getItemStack())) {
+                if (getCurrentSlot() != 0) {
                     return remaining;
                 }
+
+                if (!canInsertIntoStoredStack(stack)) return remaining;
 
                 int insertable = Math.min((forced ? Integer.MAX_VALUE : getItemCapacity()) - getItemCount(), remaining);
 
@@ -619,6 +604,12 @@ public abstract class MTEDigitalChestBase extends MTETieredMachineBlock
                 remaining -= insertable;
 
                 return remaining;
+            }
+
+            private boolean canInsertIntoStoredStack(ImmutableItemStack stack) {
+                ItemStack storedStack = getItemStack();
+                if (!ItemUtil.isStackEmpty(storedStack)) return stack.matches(storedStack);
+                return mDisableFilter || ItemUtil.isStackEmpty(mInventory[1]) || stack.matches(mInventory[1]);
             }
         }
     }
