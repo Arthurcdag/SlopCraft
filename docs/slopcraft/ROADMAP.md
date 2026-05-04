@@ -18,6 +18,20 @@ must become a measurable gate.
 3. `slopcraft/main`: stable SlopCraft development after bootstrap.
 4. `slopcraft/experimental/*`: large content or performance work behind config gates.
 
+## Two-Track Strategy
+
+SlopCraft has two connected tracks:
+
+- Compatibility Track: keep GTNH/GT5-style worlds alive, fix bugs, improve performance, and preserve `gregtech` mod id
+  compatibility until migration tooling exists.
+- Foundry Track: design a ground-up SlopCraft tech game from first principles. Foundry is allowed to be incompatible,
+  but only after it proves it can beat the old loop on clarity, performance, stability, and automation depth.
+
+See:
+
+- `docs/slopcraft/GROUND_UP_DESIGN.md`
+- `docs/slopcraft/VERTICAL_SLICE_0.md`
+
 ## Compatibility Strategy
 
 Phase 0 keeps these identifiers stable:
@@ -96,3 +110,11 @@ Milestone 0.1 is a compatibility build:
 - The bootstrap bugfix stack applied.
 - No mod id migration yet.
 - A short migration note explaining that this is a drop-in GregTech-compatible fork, not a new-save-only rewrite.
+
+Milestone 0.F is the Foundry design prototype:
+
+- A playable ore-to-part automation loop.
+- A small physical process graph: motion, heat, pressure, and material state.
+- Diagnostics for every stopped machine.
+- Recipe/process validation before world load.
+- No hidden spreadsheet-only progression.
