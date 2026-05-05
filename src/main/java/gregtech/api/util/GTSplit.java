@@ -1,6 +1,9 @@
 package gregtech.api.util;
 
 import java.util.Arrays;
+import java.util.IllegalFormatException;
+import java.util.Locale;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
@@ -10,6 +13,9 @@ import net.minecraft.util.StatCollector;
  * To use uniform line breaker in lang files.
  */
 public class GTSplit {
+
+    private static final Pattern STRING_FORMAT_WITH_SPACE_FLAG = Pattern
+        .compile("%((?:\\d+\\$)?)([-#+ 0,(<]*)(\\d*(?:\\.\\d+)?[sS])");
 
     /**
      * the Line Breaker.
@@ -27,7 +33,27 @@ public class GTSplit {
      * split the formatted text.
      */
     public static String[] splitFormatted(String s, Object... objects) {
-        return split(String.format(s, objects));
+        try {
+            return split(String.format(s, objects));
+        } catch (IllegalFormatException e) {
+            try {
+                return split(String.format(Locale.ROOT, stripStringFormatSpaceFlags(s), objects));
+            } catch (IllegalFormatException ignored) {
+                return split(s);
+            }
+        }
+    }
+
+    private static String stripStringFormatSpaceFlags(String s) {
+        Matcher matcher = STRING_FORMAT_WITH_SPACE_FLAG.matcher(s);
+        StringBuffer stripped = new StringBuffer();
+        while (matcher.find()) {
+            matcher.appendReplacement(
+                stripped,
+                Matcher.quoteReplacement("%" + matcher.group(1) + matcher.group(2).replace(" ", "") + matcher.group(3)));
+        }
+        matcher.appendTail(stripped);
+        return stripped.toString();
     }
 
     /**
